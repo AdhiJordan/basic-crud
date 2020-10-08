@@ -1,26 +1,50 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {createData} from './actions/index';
+import Display from './Display';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class Home extends Component{
+
+  state = {
+    getData: ""
+  }
+
+  handleChange(event){
+    this.setState({
+      getData: event.target.value
+    })
+  }
+
+  submitHandler(event){
+    event.preventDefault();
+    let obj = {};
+    obj['data'] = this.state.getData;
+    obj['status'] = "active";
+    this.props.createData(obj);
+    this.setState({
+      getData: ""
+    })
+  }
+
+  render(){
+        return (
+            <div>
+                <form onSubmit={this.submitHandler.bind(this)}>
+                  <input type="text" value={this.state.getData} onChange={this.handleChange.bind(this)} placeholder="Enter task..." />
+                  <button type="submit">Create</button>
+                </form>
+                <Display />
+            </div>
+        ); 
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators ({createData: createData}, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
